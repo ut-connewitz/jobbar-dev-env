@@ -1,0 +1,84 @@
+version: '3'
+services:
+
+  # node:
+  #   image: node:10
+  #   user: "node"
+  #   working_dir: /usr/src/app
+  #   volumes:
+  #     - ../App/:/usr/src/app
+  #   ports:
+  #     - 8081:8081
+  #   links:
+  #     - www
+  #   # command: "tail -f /dev/null"
+  #   command: "npm start"
+  #   #expose:
+  #    # - 3000
+
+  # nginx:
+  #     image: nginx
+  #     ports:
+  #         - 8082:80
+  #     volumes:
+  #         - ./nginx:/etc/nginx/conf.d
+  #         - ../App:/var/www/html
+  #     links:
+  #         - php
+  #         -
+
+  # php:
+  #     image: php:7.2-fpm
+  #     volumes:
+  #         - ../App:/var/www/html
+
+  www:
+    build: ./www/
+    ports:
+        - 8082:80
+    volumes:
+      # may use volume_from node
+        - ../App/:/var/www/html
+    links:
+        - mysql
+
+  laravel:
+    build: ./laravel/
+    ports:
+        - 8085:8000
+        - 8080:8080
+    volumes:
+        - ../App-Laravel/:/var/www
+    links:
+        - mysql
+
+  # laravelnode:
+  #   image: node:10
+  #   user: "node"
+  #   working_dir: /var/www
+  #   volumes:
+  #     - ../App-Laravel/:/var/www
+  #   ports:
+  #     - 8086:8086
+  #   command: "tail -f /dev/null"
+  #   # command: "npm start"
+  #   #expose:
+  #    # - 3000
+
+  mysql:
+    image: mariadb
+    environment:
+        MYSQL_DATABASE: db
+        MYSQL_USER: user
+        MYSQL_PASSWORD: user
+        MYSQL_ROOT_PASSWORD: user
+    #volumes:
+    #    - ./mysql:/docker-entrypoint-initdb.d
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8083:80
+    links:
+      - mysql:db
