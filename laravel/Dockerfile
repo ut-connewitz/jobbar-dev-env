@@ -30,7 +30,5 @@ RUN bash nodesource_setup.sh
 
 RUN apt install -y nodejs
 
-
-# FROM node:10
-# WORKDIR /var/www
-# CMD tail -f /dev/null
+COPY ./run.sh /
+# ENTRYPOINT ["/run.sh"]

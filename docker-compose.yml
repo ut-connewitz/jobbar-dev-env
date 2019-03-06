@@ -1,77 +1,32 @@
 version: '3'
 services:
 
-  # node:
-  #   image: node:10
-  #   user: "node"
-  #   working_dir: /usr/src/app
-  #   volumes:
-  #     - ../App/:/usr/src/app
-  #   ports:
-  #     - 8081:8081
-  #   links:
-  #     - www
-  #   # command: "tail -f /dev/null"
-  #   command: "npm start"
-  #   #expose:
-  #    # - 3000
-
-  # nginx:
-  #     image: nginx
-  #     ports:
-  #         - 8082:80
-  #     volumes:
-  #         - ./nginx:/etc/nginx/conf.d
-  #         - ../App:/var/www/html
-  #     links:
-  #         - php
-  #         -
-
-  # php:
-  #     image: php:7.2-fpm
-  #     volumes:
-  #         - ../App:/var/www/html
-
-  www:
-    build: ./www/
-    ports:
-        - 8082:80
-    volumes:
-      # may use volume_from node
-        - ../App/:/var/www/html
-    links:
-        - mysql
-
   laravel:
     build: ./laravel/
+    working_dir: /var/www
     ports:
-        - 8085:8000
+        # port to laravel, after start app is available at http://localhost:port
         - 8080:8080
+        # port for hot module replacement at development
+        # if you change this you also need to change it at jobbar-app/webpack.mix.js
+        - 8081:8081
     volumes:
-        - ../App-Laravel/:/var/www
+        - ../jobbar-app/:/var/www
+    command:
+        # check install, start laravel server and compiling javascript
+        # uncomment if you dont want to start it automatically
+        - /run.sh
     links:
         - mysql
-
-  # laravelnode:
-  #   image: node:10
-  #   user: "node"
-  #   working_dir: /var/www
-  #   volumes:
-  #     - ../App-Laravel/:/var/www
-  #   ports:
-  #     - 8086:8086
-  #   command: "tail -f /dev/null"
-  #   # command: "npm start"
-  #   #expose:
-  #    # - 3000
 
   mysql:
     image: mariadb
     environment:
-        MYSQL_DATABASE: db
-        MYSQL_USER: user
-        MYSQL_PASSWORD: user
-        MYSQL_ROOT_PASSWORD: user
+        # if you change any credentials here, you need to adopt these in your .env file
+        MYSQL_DATABASE: homestead
+        MYSQL_USER: homestead
+        MYSQL_PASSWORD: secret
+        MYSQL_ROOT_PASSWORD: secret
     #volumes:
     #    - ./mysql:/docker-entrypoint-initdb.d
 
