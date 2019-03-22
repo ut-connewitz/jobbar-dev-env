@@ -32,3 +32,6 @@ RUN apt install -y nodejs
 
 COPY ./run.sh /
 # ENTRYPOINT ["/run.sh"]
+
+# RUN  useradd --shell /bin/bash -u 1024 -o -c "" -m myuser
+# USER myuser
